@@ -1,0 +1,358 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Intuition about Functors, Applicatives and Monads &#8211; ybr</title>
+<meta name="description" content="An article explaining my comprehension in a simple way.">
+<meta name="keywords" content="functor, monad, applicative">
+
+  
+
+<!-- Twitter Cards -->
+<meta name="twitter:title" content="Intuition about Functors, Applicatives and Monads">
+<meta name="twitter:description" content="An article explaining my comprehension in a simple way.">
+<meta name="twitter:site" content="@ybrdx">
+<meta name="twitter:creator" content="@ybrdx">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="/images/">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Intuition about Functors, Applicatives and Monads">
+<meta property="og:description" content="An article explaining my comprehension in a simple way.">
+<meta property="og:url" content="/articles/functor-applicative-monad/">
+<meta property="og:site_name" content="ybr">
+
+
+
+
+
+<link rel="canonical" href="/articles/functor-applicative-monad/">
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="ybr Feed">
+
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- HTML5 Shiv and Media Query Support -->
+<!--[if lt IE 9]>
+  <script src="/assets/js/vendor/html5shiv.min.js"></script>
+  <script src="/assets/js/vendor/respond.min.js"></script>
+<![endif]-->
+
+<!-- Modernizr -->
+<script src="/assets/js/vendor/modernizr-2.7.1.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/apple-touch-icon-144x144-precomposed.png">
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+      
+		    
+		        
+		    
+		    <li><a href="/" >Home</a></li>
+		  
+        <li class="dosearch"><span><i class="fa fa-search"></i> Search</span></li>
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<div class="search-wrapper">
+  <div class="search-form">
+    <input type="text" class="search-field" placeholder="Search...">
+    <button class="close-btn"><i class="fa fa-times-circle fa-2x"></i></button>
+    <ul class="search-results post-list"></ul><!-- /.search-results -->
+  </div><!-- /.search-form -->
+</div><!-- ./search-wrapper -->
+
+<header class="masthead">
+	<div class="wrap">
+        
+        <h1 class="site-title animated fadeIn"><a href="">ybr</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description"></h2>
+	</div>
+</header><!-- /.masthead -->
+
+<div class="js-menu-screen menu-screen"></div>
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="/tags/#functor" title="Pages tagged functor">functor</a>&nbsp;&bull;&nbsp;<a href="/tags/#monad" title="Pages tagged monad">monad</a>&nbsp;&bull;&nbsp;<a href="/tags/#applicative" title="Pages tagged applicative">applicative</a></span>
+        
+          <h1 class="entry-title">Intuition about Functors, Applicatives and Monads</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        
+          
+        
+          <img src="https://avatars3.githubusercontent.com/u/1468867?v=3&s=460" class="bio-photo" alt="Yohann Brédoux bio photo"></a>
+        
+        <span class="author vcard">By <span class="fn">Yohann Brédoux</span></span>
+        <span class="entry-date date published"><time datetime="2014-11-26T00:00:00+01:00"><i class="fa fa-calendar-o"></i> November 26, 2014</time></span>
+        
+        <span class="entry-comments"><i class="fa fa-comment-o"></i> <a href="#disqus_thread">Comment</a></span>
+        <span class="social-share-twitter">
+  <a href="https://twitter.com/intent/tweet?hashtags=functor,monad,applicative&amp;text=Intuition%20about%20Functors,%20Applicatives%20and%20Monads&amp;url=/articles/functor-applicative-monad/&amp;via=ybrdx" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square"></i> Tweet</a>
+</span>
+<span class="social-share-facebook">
+  <a href="https://www.facebook.com/sharer/sharer.php?u=/articles/functor-applicative-monad/" title="Share on Facebook" itemprop="Facebook"><i class="fa fa-facebook-square"></i> Like</a>
+</span>
+<span class="social-share-googleplus">
+  <a href="https://plus.google.com/share?url=/articles/functor-applicative-monad/" title="Share on Google Plus" itemprop="GooglePlus"><i class="fa fa-google-plus-square"></i> +1</a>
+</span>
+<!-- /.social-share -->
+        
+      </footer>
+      <div class="entry-content">
+        <p>I went to <a href="http://scala.io/">scala.io</a> 2014 and had the chance to sit in the talk <a href="https://speakerdeck.com/larsrh/optimusprimet">OptimusPrimeT</a> by <a href="https://twitter.com/larsr_h">Lars Hupel</a>. I really like his intuitive way to describe functional buildings.</p>
+
+<p>The Functor and Monad buildings are very easy to come by since any Scala programmer faces them immediatly. As soon as one tries to understand behaviours of Option and List, it will read these words Functor and Monad.
+While Applicative Functors are less highlighted and I never met one in the standard library.</p>
+
+<p>We will try to get an intuition about these functional buildings setting a particular focus on Applicative.</p>
+
+<h1 id="functor">Functor</h1>
+
+<blockquote>
+  <p>“Functors are about transforming data” - Lars Hupel</p>
+</blockquote>
+
+<p>Functors do not allow creation nor deletion of data but just transformation. Also they are intended to keep their behaviour.</p>
+
+<p>Here is a functor type class definition</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">trait</span> <span class="nc">Functor</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">map</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">fa</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span>
+<span class="o">}</span></code></pre></div>
+
+<p>We can infer from types that we need an A to compute a B, the reamining is functor’s responsibility. The function f does not take a F[A] nor it returns a F[B], meaning you have no way to influence the functor’s logic.</p>
+
+<p>Considering scala List as our Functor and applying f on data of the List will result in another List of the exact same length in the exact same positions.</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span> <span class="o">-</span> <span class="mi">2</span><span class="o">)</span>
+<span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(-</span><span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span></code></pre></div>
+
+<p>Use <code>Simple transformation</code></p>
+
+<h1 id="monad">Monad</h1>
+
+<blockquote>
+  <p>“Monads are about transforming dependent pieces of data” - Lars Hupel</p>
+</blockquote>
+
+<p>On the other hand Monads allow both creation and deletion of data as well as transformation. Furthermore the behaviour of the Monad can be switched to some less happy path.</p>
+
+<p>Here is the Monad type class definition</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">trait</span> <span class="nc">Monad</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">flatMap</span><span class="o">(</span><span class="n">fa</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">F</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span>
+<span class="o">}</span></code></pre></div>
+
+<p>Types tell that an A is required to compute a F[B], and the rest is left apart as for the Monad’s logic. The function f allows to switch between the many shapes of a Monad. We deduce here that the effect expressed by F[B] depends on A so Monads are really about chaining dependent pieces of data.</p>
+
+<p>For instance a List will apply f to each of its elements, when f returns a List containing more than 1 element it results in adding elements to the List.</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="n">x</span> <span class="o">*</span> <span class="mi">10</span><span class="o">,</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">1</span><span class="o">))</span>
+<span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="mi">11</span><span class="o">,</span> <span class="mi">20</span><span class="o">,</span> <span class="mi">21</span><span class="o">)</span></code></pre></div>
+
+<p>Conversely when f returns an empty List then this element is removed from the List.</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nc">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]())</span>
+<span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">()</span></code></pre></div>
+
+<p>Use <code>Short circuit error handling</code>, <code>Parser combinators</code>, <code>Value-oriented paralleslism</code>, …</p>
+
+<h1 id="applicative">Applicative</h1>
+
+<blockquote>
+  <p>“Applicatives are about transforming independent pieces of data” - Lars Hupel</p>
+</blockquote>
+
+<p>Applicatives are more confidential, less explicitly exposed but you certainly use them quite often under the cover.</p>
+
+<p>Applicatives are like Monads in that they can create, modify and delete data but in a slightly different way. An Applicative Functor does not rely on a specific function of yours to create or delete data but only on the supplied F[_] arguments and its very own logic.</p>
+
+<p>Here is the Applicative type class definition</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">trait</span> <span class="nc">Applicative</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="o">&lt;*&gt;[</span><span class="kt">A</span>, <span class="kt">B</span>, <span class="kt">C</span><span class="o">](</span><span class="n">fa</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">ff</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">A</span> <span class="k">=&gt;</span> <span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span>
+<span class="o">}</span></code></pre></div>
+
+<p>Applicatives are more confusing when compared to Monads, why would we ever need to have a F[A =&gt; B] ? As its name suggests Applicatives try to apply a function A =&gt; B with a label F (F[A =&gt; B]) to an A with the same kind of label F (F[A]).</p>
+
+<p>Focusing on types, from an A we know how to compute a B. We don’t know how to compute F[B], once more it is Applicatives responsibility. Finally we can’t bring out any relationship between F[A] and F[B] but our A =&gt; B, this means Applicatives know how to generically manage things nicely. Chaining application through an Applicative makes very clear it deals with independent pieces of data.</p>
+
+<p>Say we have some untrusted generic data structure and want some other trusted data structure, respectively JSON and case class. Surely we know how to extract data from a json tree for the first field of the class as well as we know for the second field and so on. Then we need some way to express these extracted pieces of data should overall fail when combined together if at least one of them can not be extracted.</p>
+
+<p>For example we have a Person</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">case</span> <span class="k">class</span> <span class="nc">Person</span><span class="o">(</span><span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">age</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span></code></pre></div>
+
+<p>Of course, we know how to create a Person from the data needed for its fields.</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="nc">Person</span><span class="o">.</span><span class="n">curried</span>
+<span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="o">(</span><span class="nc">Int</span> <span class="k">=&gt;</span> <span class="nc">Person</span><span class="o">)</span> <span class="k">=</span> <span class="o">&lt;</span><span class="n">function1</span><span class="o">&gt;</span></code></pre></div>
+
+<p>Here for ff, A is String and B is Int =&gt; Person.</p>
+
+<p>It is Applicatives responsiblity to decide what to do with zero, one or more failing pieces of data, should it be to accumulate failures, keep the first or the last one.</p>
+
+<p>Going back to the untrusted data structure we can create a way of extracting each piece of data from the JSON tree and make these pieces available as Options. We can extract both the name to get an Option[String] and extract the age to get an Option[Int]</p>
+
+<p>Now we mix everything together to see what can happen:</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="nc">Option</span><span class="o">(</span><span class="nc">Person</span><span class="o">.</span><span class="n">curried</span><span class="o">)</span> <span class="o">&lt;*&gt;</span> <span class="n">extract</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">)[</span><span class="kt">String</span><span class="o">]</span> <span class="o">&lt;*&gt;</span> <span class="n">extract</span><span class="o">(</span><span class="s">&quot;age&quot;</span><span class="o">)[</span><span class="kt">Int</span><span class="o">]</span>
+<span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Person</span><span class="o">]</span></code></pre></div>
+
+<p>This expression has the following type:</p>
+
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="nc">Option</span><span class="o">[</span><span class="kt">String</span> <span class="k">=&gt;</span> <span class="kt">Int</span> <span class="k">=&gt;</span> <span class="kt">Person</span><span class="o">]</span> <span class="o">&lt;*&gt;</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="o">&lt;*&gt;</span> <span class="nc">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>
+<span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Person</span><span class="o">]</span></code></pre></div>
+
+<p>In case data is missing somewhere in the application chain then it is logical to result in a None.</p>
+
+<p>We understand the pieces of data are independent one from another and Applicative Functors allow to combine them in order to compute meaningful results.</p>
+
+<p>Use <code>Accumulative error handling</code></p>
+
+        <div id="disqus_thread"></div><!-- /#disqus_thread -->
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo" class="entry-wrapper">
+    
+
+<span>&copy; 2014 Yohann Brédoux. Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/" rel="nofollow">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/ybrdx" title="Yohann Brédoux on Twitter" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a>
+	<a href="http://facebook.com/yohann.bredoux" title="Yohann Brédoux on Facebook" target="_blank"><i class="fa fa-facebook-square fa-2x"></i></a>
+	
+	<a href="http://linkedin.com/in/yohannbredoux" title="Yohann Brédoux on LinkedIn" target="_blank"><i class="fa fa-linkedin-square fa-2x"></i></a>
+	
+	
+	
+	<a href="http://github.com/ybr" title="Yohann Brédoux on Github" target="_blank"><i class="fa fa-github-square fa-2x"></i></a>
+	
+  <a href="/feed.xml" title="Atom/RSS feed"><i class="fa fa-rss-square fa-2x"></i></a>
+</div><!-- /.social-icons -->
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/assets/js/scripts.min.js"></script>
+
+<!-- Jekyll Simple Search option -->
+<script>
+  $(document).ready(function() {
+      $('.search-field').jekyllSearch({
+          jsonFile: '/search.json',
+          searchResults: '.search-results',
+          template: '<li><article><a href="{url}">{title} <span class="entry-date"><time datetime="{date}">{shortdate}</time></span></a></article></li>',
+          fuzzy: true,
+          noResults: '<p>Nothing found.</p>'
+        });
+  });
+
+  (function( $, window, undefined ) {
+    
+     var bs = {
+          close: $(".close-btn"),
+          searchform: $(".search-form"),
+          canvas: $(".js-menu-screen"),
+          dothis: $('.dosearch')
+      };
+    
+    bs.dothis.on('click', function() {
+      $('.search-wrapper').css({ display: "block" });
+      $('body').toggleClass('no-scroll');
+      bs.searchform.toggleClass('active');
+      bs.searchform.find('input').focus();
+      bs.canvas.toggleClass('is-visible');
+    });
+    
+      bs.close.on('click', function() {
+        $('.search-wrapper').removeAttr( 'style' );
+        $('body').toggleClass('no-scroll');
+        bs.searchform.toggleClass('active');
+        bs.canvas.removeClass('is-visible');
+    });
+  })( jQuery, window );
+</script>
+
+
+
+
+  
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'ybrdx'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+	        
+
+</body>
+</html>
